@@ -1,0 +1,55 @@
+.clickable-list {
+  margin-top: 1rem;
+  max-width: 29rem;
+  display: block;
+  grid-area: 3 / 1 / 4 / 2;
+}
+
+.clickable-list__header {
+  padding-bottom: 0.5rem;
+  font-family: 'Bellefair', serif;
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+
+.clickable-list__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.clickable-item {
+  margin-bottom: 0.5rem;
+  display: flex;
+  min-height: 2.5rem;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0;
+  background-color: #6cb171;
+}
+
+.clickable-item__name {
+  padding: 0.5rem 1rem;
+  line-height: 1.25rem;
+}
+
+.clickable-item__button {
+  text-transform: uppercase;
+  font-size: 10px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: #eee;
+  background-color: #403339;
+  border: 1px solid #333;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  height: 100%;
+  width: 5rem;
+  min-width: 5rem;
+}
+
+.clickable-item__button:hover,
+.clickable-item__button:focus {
+  background-color: #4f5458;
+}

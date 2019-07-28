@@ -1,0 +1,30 @@
+.results {
+  border-left: 3px dotted #ddd;
+  padding: 0 1rem;
+}
+
+@media screen and (min-width: 420px) {
+  .results {
+    grid-area: 1 / 2 / 4 / -1;
+  }
+}
+
+.results__title {
+  padding-bottom: 0.5rem;
+  font-family: 'Bellefair', serif;
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+
+.results__empty-info {
+  color: #bbb;
+}
+
+.results__options {
+  padding: .5rem 0;
+  font-size: 14px;
+}
+
+.results__option-label {
+  padding-left: 0.5rem;
+}

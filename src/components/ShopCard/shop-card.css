@@ -1,0 +1,34 @@
+.shop-card {
+  background-color: #eee;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.shop-card__shop-name {
+  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: normal;
+  padding-bottom: 0.5rem;
+}
+
+.shop-card__info {
+  font-size: 12px;
+  padding-bottom: 0.5rem;
+}
+
+.shop-card__list {
+  list-style: inside square;
+}
+
+.shop-card__item {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.shop-card__packaging {
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #999;
+  padding-left: 0.5rem;
+}
