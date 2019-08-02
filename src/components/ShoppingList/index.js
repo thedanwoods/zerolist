@@ -45,6 +45,7 @@ const ShoppingList = () => {
 
   const addItem = item => setList([...list.filter(i => i !== item), item]);
   const removeItem = item => setList(list.filter(i => i !== item));
+  const clearList = () => setList([]);
   const toggleItem = item => {
     setList([
       ...list.filter(i => i !== item),
@@ -59,7 +60,11 @@ const ShoppingList = () => {
         <Header />
         <main className="shopping-list">
           <InputItem choices={items} addItem={addItem} />
-          <YourItems list={list} removeItem={removeItem} />
+          <YourItems
+            list={list}
+            removeItem={removeItem}
+            clearList={clearList}
+          />
           <ClickableList
             items={items}
             currentList={list}

@@ -7,16 +7,19 @@ const SingleItem = ({ item, remove }) => (
     <p>{item}</p>
     <div className="single-item__button-container">
       <button className="single-item__button" type="button" onClick={remove}>
-        <div className="single-item__cross">&times;</div> 
+        <div className="single-item__cross">&times;</div>
       </button>
     </div>
   </li>
 );
 
-const YourItems = ({ list, removeItem }) =>
+const YourItems = ({ list, removeItem, clearList }) =>
   list.length > 0 && (
     <div className="your-items">
-      <h2 className="your-items__header">Your list</h2>
+      <div className="your-items__title">
+        <h2 className="your-items__header">Your list</h2>
+        <button className="your-items__clear" onClick={clearList}>Clear list</button>
+      </div>
       <ul className="your-items__list">
         {list.map(item => (
           <SingleItem key={item} item={item} remove={() => removeItem(item)} />

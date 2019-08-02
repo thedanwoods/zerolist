@@ -2,7 +2,12 @@
   margin-top: 1rem;
   max-width: 29rem;
   display: block;
-  grid-area: 3 / 1 / 4 / 2;
+}
+
+@media screen and (min-width: 480px) {
+  .clickable-list {
+    grid-area: 3 / 1 / 4 / 2;
+  }
 }
 
 .clickable-list__header {
@@ -22,7 +27,6 @@
   display: flex;
   min-height: 2.5rem;
   justify-content: space-between;
-  align-items: center;
   border-radius: 0;
   background-color: #6cb171;
 }
@@ -30,6 +34,10 @@
 .clickable-item__name {
   padding: 0.5rem 1rem;
   line-height: 1.25rem;
+}
+
+clickable-item__button-container {
+  display: flex;
 }
 
 .clickable-item__button {

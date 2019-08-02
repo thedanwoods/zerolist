@@ -11,13 +11,16 @@ import './results.css';
 // There is a hierarchy of plastic, unpackaged, paper etc. Sort by it.
 // Pick the first of the array and any which are the same as it.
 
-const shopsHierarchy = [
+const initialShopsHierarchy = [
+  'milkandmore',
   'beetroot',
   'proudsow',
   'byo',
   'budgens',
+  'brockleymarket',
   'sainsburys',
   'gather',
+  'villagegrocer',
   'jones',
   'planet',
   'asnature',
@@ -26,11 +29,14 @@ const shopsHierarchy = [
 ];
 
 const packagingHierarchy = [
+  'returnable',
   'unpackaged',
+  'reusable',
   'paper',
   'card',
   'glass',
   'metal',
+  'wax',
   'other',
   'plastic',
 ];
@@ -52,14 +58,64 @@ const packagingHierarchy = [
 const sortByEco = (a, b) =>
   packagingHierarchy.indexOf(a.type) - packagingHierarchy.indexOf(b.type);
 
-const sortByShop = (a, b) =>
-  shopsHierarchy.indexOf(a.shop) - shopsHierarchy.indexOf(b.shop);
-
-const sortByShopName = (a, b) =>
-  shopsHierarchy.indexOf(a) - shopsHierarchy.indexOf(b);
-
 const Results = ({ list, data }) => {
+  console.log('rendering results');
+  const [shopsHierarchy, setShopsHierarchy] = useState(initialShopsHierarchy);
   const [fewerTrips, setFewerTrips] = useState(true);
+
+  const sendToTop = id =>
+    setShopsHierarchy([id, ...shopsHierarchy.filter(shopId => shopId !== id)]);
+
+  const sendUp = id => {
+    const idIndex = shopsHierarchy.indexOf(id);
+    if (idIndex < 1) {
+      return;
+    }
+    if (shopsHierarchy.length === idIndex + 1) {
+      setShopsHierarchy([
+        ...shopsHierarchy.slice(0, idIndex - 1),
+        id,
+        shopsHierarchy[idIndex - 1],
+      ]);
+    } else {
+      setShopsHierarchy([
+        ...shopsHierarchy.slice(0, idIndex - 1),
+        id,
+        shopsHierarchy[idIndex - 1],
+        ...shopsHierarchy.slice(idIndex + 1),
+      ]);
+    }
+  };
+  const sendDown = id => {
+    const idIndex = shopsHierarchy.indexOf(id);
+    if (idIndex + 1 === shopsHierarchy.length) {
+      return;
+    }
+    if (idIndex === 0) {
+      setShopsHierarchy([
+        shopsHierarchy[idIndex + 1],
+        id,
+        ...shopsHierarchy.slice(idIndex + 2),
+      ]);
+    } else {
+      setShopsHierarchy([
+        ...shopsHierarchy.slice(0, idIndex),
+        shopsHierarchy[idIndex + 1],
+        id,
+        ...shopsHierarchy.slice(idIndex + 2),
+      ]);
+    }
+  };;
+  const sendToBottom = id =>
+    setShopsHierarchy([...shopsHierarchy.filter(shopId => shopId !== id), id]);
+
+  const sortByShop = (a, b) =>
+    shopsHierarchy.indexOf(a.shop) - shopsHierarchy.indexOf(b.shop);
+
+  const sortByShopName = (a, b) => {
+    const hierarchy = [...shopsHierarchy, 'elsewhere'];
+    return hierarchy.indexOf(a) - hierarchy.indexOf(b);
+  };
   // Determine ALL the best places to buy things, based on the lowest impact packaging
   const bestSources = list.map(item => {
     const itemData = data.sources.filter(s => s.name === item)[0];
@@ -153,13 +209,17 @@ const Results = ({ list, data }) => {
         .sort(sortByShopName)
         .map(shop => {
           const shopDetails = data.shop.filter(s => s.id === shop)[0] || {
-            name: 'No sources listed',
+            name: 'No sources found',
           };
           return (
             <ShopCard
               key={shopDetails.name}
               shopDetails={shopDetails}
               items={shoppingListByShop[shop]}
+              sendToTop={sendToTop}
+              sendUp={sendUp}
+              sendDown={sendDown}
+              sendToBottom={sendToBottom}
             />
           );
         })}

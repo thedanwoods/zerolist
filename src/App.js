@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ShoppingList from './components/ShoppingList';
+import CookieBanner from './components/CookieBanner';
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <main>
         <ShoppingList />
       </main>
+      <CookieBanner />
     </div>
   );
 }

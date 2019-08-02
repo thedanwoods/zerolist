@@ -1,11 +1,12 @@
 .results {
-  border-left: 3px dotted #ddd;
-  padding: 0 1rem;
+  grid-area: 2 / 1 / 3 / -1;
 }
 
-@media screen and (min-width: 420px) {
+@media screen and (min-width: 480px) {
   .results {
     grid-area: 1 / 2 / 4 / -1;
+    border-left: 3px dotted #ddd;
+    padding: 0 1rem;
   }
 }
 
@@ -21,7 +22,7 @@
 }
 
 .results__options {
-  padding: .5rem 0;
+  padding: .5rem 0 1rem;
   font-size: 14px;
 }
 

@@ -10,6 +10,18 @@
   line-height: 16px;
   font-weight: normal;
   padding-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shop-card__icon-button {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: #333;
 }
 
 .shop-card__info {

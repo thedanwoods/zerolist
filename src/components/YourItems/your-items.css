@@ -1,5 +1,17 @@
 .your-items {
-  grid-area: 2 / 1 / 3 / 2;
+  grid-area: 3 / 1 / 4 / -1;
+}
+
+@media screen and (min-width: 480px) {
+  .your-items {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+}
+
+.your-items__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .your-items__header {
@@ -7,6 +19,16 @@
   font-family: 'Bellefair', serif;
   font-size: 1.5rem;
   font-weight: normal;
+}
+
+.your-items__clear {
+  border: none;
+  background-color: transparent;
+  padding: 0.5rem 0;
+  text-transform: uppercase;
+  box-shadow: none;
+  color: #999;
+  cursor: pointer;
 }
 
 .your-items__list {
@@ -62,4 +84,19 @@
 
 .single-item__cross {
   transform: translateY(-0.5px);
+}
+
+.your-items__item-enter {
+  opacity: 0;
+}
+.your-items__item-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.your-items__item-exit {
+  opacity: 1;
+}
+.your-items__item-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-in;
 }

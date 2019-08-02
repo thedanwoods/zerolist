@@ -5,9 +5,15 @@ import './clickable-list.css';
 const ClickableItem = ({ title, listed, toggleItem }) => (
   <li className="clickable-item">
     <div className="clickable-item__name">{title}</div>
-    <button className="clickable-item__button" type="button" onClick={toggleItem}>
-      {listed ? 'Remove' : 'Add'}
-    </button>
+    <div className="clickable-item__button-container">
+      <button
+        className="clickable-item__button"
+        type="button"
+        onClick={toggleItem}
+      >
+        {listed ? 'Remove' : 'Add'}
+      </button>
+    </div>
   </li>
 );
 

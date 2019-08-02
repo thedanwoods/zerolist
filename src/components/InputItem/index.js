@@ -35,9 +35,19 @@ const InputItem = ({ choices, addItem }) => {
     inputRef.current.focus();
   }, []);
 
-  const filteredChoices = choices.filter(choice =>
+  const matchingChoices = choices.filter(choice =>
     choice.toLowerCase().includes(value.toLowerCase()),
   );
+
+  const filteredChoices = [
+    ...matchingChoices.filter(choice =>
+      choice.toLowerCase().startsWith(value.toLowerCase()),
+    ),
+    ...matchingChoices.filter(choice =>
+      !choice.toLowerCase().startsWith(value.toLowerCase()),
+    ),
+  ];
+
   if (userSelection && !filteredChoices.includes(userSelection)) {
     setUserSelection(undefined);
   }
@@ -105,7 +115,7 @@ const InputItem = ({ choices, addItem }) => {
           placeholder="e.g. Pasta"
         />
       </form>
-      {value.length > 0 && (
+      {value.length > 0 && filteredChoices.length > 0 && (
         <div className="input-item__choices">
           {filteredChoices.map(choice => (
             <Item
