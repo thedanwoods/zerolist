@@ -21,16 +21,6 @@
   font-weight: normal;
 }
 
-.your-items__clear {
-  border: none;
-  background-color: transparent;
-  padding: 0.5rem 0;
-  text-transform: uppercase;
-  box-shadow: none;
-  color: #999;
-  cursor: pointer;
-}
-
 .your-items__list {
   display: grid;
   grid-template-columns: 1fr;

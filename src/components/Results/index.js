@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import SubtleButton from '../SubtleButton';
+
 import reduceShops from '../../utils/reduceShops.js';
 
 import ShopCard from '../ShopCard';
@@ -10,23 +12,6 @@ import './results.css';
 // An item can be bought in several places.
 // There is a hierarchy of plastic, unpackaged, paper etc. Sort by it.
 // Pick the first of the array and any which are the same as it.
-
-const initialShopsHierarchy = [
-  'milkandmore',
-  'beetroot',
-  'proudsow',
-  'byo',
-  'budgens',
-  'brockleymarket',
-  'sainsburys',
-  'gather',
-  'villagegrocer',
-  'jones',
-  'planet',
-  'asnature',
-  'grocery',
-  'swop',
-];
 
 const packagingHierarchy = [
   'returnable',
@@ -58,56 +43,17 @@ const packagingHierarchy = [
 const sortByEco = (a, b) =>
   packagingHierarchy.indexOf(a.type) - packagingHierarchy.indexOf(b.type);
 
-const Results = ({ list, data }) => {
-  console.log('rendering results');
-  const [shopsHierarchy, setShopsHierarchy] = useState(initialShopsHierarchy);
+const Results = ({
+  list,
+  data,
+  onOptionsClick,
+  shopsHierarchy,
+  sendUp,
+  sendDown,
+  sendToTop,
+  sendToBottom,
+}) => {
   const [fewerTrips, setFewerTrips] = useState(true);
-
-  const sendToTop = id =>
-    setShopsHierarchy([id, ...shopsHierarchy.filter(shopId => shopId !== id)]);
-
-  const sendUp = id => {
-    const idIndex = shopsHierarchy.indexOf(id);
-    if (idIndex < 1) {
-      return;
-    }
-    if (shopsHierarchy.length === idIndex + 1) {
-      setShopsHierarchy([
-        ...shopsHierarchy.slice(0, idIndex - 1),
-        id,
-        shopsHierarchy[idIndex - 1],
-      ]);
-    } else {
-      setShopsHierarchy([
-        ...shopsHierarchy.slice(0, idIndex - 1),
-        id,
-        shopsHierarchy[idIndex - 1],
-        ...shopsHierarchy.slice(idIndex + 1),
-      ]);
-    }
-  };
-  const sendDown = id => {
-    const idIndex = shopsHierarchy.indexOf(id);
-    if (idIndex + 1 === shopsHierarchy.length) {
-      return;
-    }
-    if (idIndex === 0) {
-      setShopsHierarchy([
-        shopsHierarchy[idIndex + 1],
-        id,
-        ...shopsHierarchy.slice(idIndex + 2),
-      ]);
-    } else {
-      setShopsHierarchy([
-        ...shopsHierarchy.slice(0, idIndex),
-        shopsHierarchy[idIndex + 1],
-        id,
-        ...shopsHierarchy.slice(idIndex + 2),
-      ]);
-    }
-  };;
-  const sendToBottom = id =>
-    setShopsHierarchy([...shopsHierarchy.filter(shopId => shopId !== id), id]);
 
   const sortByShop = (a, b) =>
     shopsHierarchy.indexOf(a.shop) - shopsHierarchy.indexOf(b.shop);
@@ -187,7 +133,10 @@ const Results = ({ list, data }) => {
 
   return (
     <div className="results">
-      <h2 className="results__title">Where to buy it</h2>
+      <div className="results__title">
+        <h2 className="results__header">Where to buy</h2>
+        <SubtleButton onClick={onOptionsClick}>Options</SubtleButton>
+      </div>
       <div className="results__options">
         <input
           type="checkbox"

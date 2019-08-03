@@ -1,0 +1,12 @@
+
+.subtle-button {
+    border: none;
+    background-color: transparent;
+    padding: 0.5rem 0;
+    margin-left: 1rem;
+    text-transform: uppercase;
+    box-shadow: none;
+    color: #999;
+    cursor: pointer;
+  }
+  

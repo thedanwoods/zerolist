@@ -11,7 +11,13 @@
 }
 
 .results__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding-bottom: 0.5rem;
+}
+
+.results__header {
   font-family: 'Bellefair', serif;
   font-size: 1.5rem;
   font-weight: normal;
@@ -24,6 +30,8 @@
 .results__options {
   padding: .5rem 0 1rem;
   font-size: 14px;
+  display: flex;
+  align-items: center;
 }
 
 .results__option-label {

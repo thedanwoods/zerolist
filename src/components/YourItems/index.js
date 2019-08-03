@@ -1,5 +1,7 @@
 import React from 'react';
 
+import SubtleButton from '../SubtleButton';
+
 import './your-items.css';
 
 const SingleItem = ({ item, remove }) => (
@@ -18,7 +20,7 @@ const YourItems = ({ list, removeItem, clearList }) =>
     <div className="your-items">
       <div className="your-items__title">
         <h2 className="your-items__header">Your list</h2>
-        <button className="your-items__clear" onClick={clearList}>Clear list</button>
+        <SubtleButton onClick={clearList}>Clear List</SubtleButton>
       </div>
       <ul className="your-items__list">
         {list.map(item => (
