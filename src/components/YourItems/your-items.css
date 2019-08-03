@@ -30,7 +30,7 @@
 .single-item {
   align-items: center;
   background-color: #d88d2b;
-  border-radius: 0.75rem;
+  border-radius: 0.375rem;
   padding: 0 0 0 1rem;
   display: flex;
   justify-content: space-between;
