@@ -9,5 +9,7 @@ Let me know if you have any suggestions or feedback!
 This is currently an unejected `create-react-app` project. To get started:
 
 `$ git clone https://github.com/thedanwoods/zerolist`
+
 `$ npm install`
+
 `$ npm start`
