@@ -1,0 +1,41 @@
+.mobile-controls {
+  background-color: #4f5458;
+  border-top: 4px solid white;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 3rem;
+}
+
+.mobile-controls__buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.mobile-controls__button {
+  border: none;
+  box-shadow: none;
+  background-color: white;
+  cursor: pointer;
+  height: 2rem;
+  text-transform: uppercase;
+  border-radius: 3px;
+  font-family: 'Lato', sans-serif;
+  font-size: 12px;
+}
+
+.mobile-controls__button--active {
+  background-color: #888;
+}
+
+.mobile-controls__button:hover,
+.mobile-controls__button:focus {
+  background-color: #ddd;
+}
+
+.mobile-controls__button:active {
+  background-color: #d88d2b;
+}

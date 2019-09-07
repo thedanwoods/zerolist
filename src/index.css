@@ -105,3 +105,7 @@ ul {
 input {
   box-sizing : border-box;
 }
+
+button::-moz-focus-inner {
+  border: 0;
+}

@@ -14,11 +14,12 @@ const ResultsOptions = ({
   sendDown,
   resetShops,
   data,
+  showControls,
 }) => (
   <div className="results-options">
     <div className="results-options__title">
       <h2 className="results-options__header">Shopping preferences</h2>
-      <SubtleButton onClick={onClose}>X</SubtleButton>
+      {showControls && <SubtleButton onClick={onClose}>X</SubtleButton>}
     </div>
     <ol>
       {shopsHierarchy.map((shop, index) => {

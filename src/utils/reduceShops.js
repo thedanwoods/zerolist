@@ -1,67 +1,10 @@
+import leastShopsSequence from './leastShopsSequence';
+import mostLocalSequence from './mostLocalSequence';
+
 function sortByHierarchy(data, shopsHierarchy) {
   const sortByShop = (a, b) =>
     shopsHierarchy.indexOf(a) - shopsHierarchy.indexOf(b);
   return [...data].sort(sortByShop);
-}
-// Given an array of lists of shop ids,
-// return them in order of preference. e.g.
-// [['beetroot', 'gather', 'grocery'], ['beetroot', 'byo', 'budgens']]
-// returns
-// [['beetroot', 'byo', 'budgens'], ['beetroot', 'gather', 'grocery']]
-function sortChoices(choices, shopsHierarchy) {
-  const scoreShopList = list =>
-    list
-      .map(shop => shopsHierarchy.indexOf(shop))
-      .reduce((acc, cur) => acc + cur, 0);
-  return [...choices].sort((a, b) => scoreShopList(a) - scoreShopList(b));
-}
-
-// Sort by how local the list is.
-// Prefer ones at the top of the list.
-function localSort(choices, shopsHierarchy) {
-  const reversedHierarchy = [...shopsHierarchy].reverse();
-  const scoreShopList = list =>
-    list
-      .map(shop => reversedHierarchy.indexOf(shop))
-      .reduce((acc, cur) => acc + cur ** 2, 0);
-  return [...choices].sort((a, b) => scoreShopList(b) - scoreShopList(a));
-}
-
-function canBuyEverything(data, sources) {
-  let ok = true;
-  data.forEach(item => {
-    let shops = item.sources.map(source => source.shop);
-    // If NO items in shops are in sources, set ok to false.
-    if (!shops.filter(el => sources.includes(el)).length) {
-      ok = false;
-    }
-  });
-  return ok;
-}
-
-// Find all combinations of shops
-function findAllCombinations(initialData, allShops) {
-  let validShopsCombinations = [];
-  function tryRemoval(data, sources) {
-    if (!canBuyEverything(data, sources)) return;
-    validShopsCombinations.push(sources);
-    // If not everything can be bought, return.
-    for (let i = 0; i < sources.length; i++) {
-      const removed = [...sources.slice(0, i), ...sources.slice(i + 1)];
-      tryRemoval(data, removed);
-    }
-    return null;
-  }
-  tryRemoval(initialData, allShops);
-  return validShopsCombinations;
-}
-
-function pickFewest(arr) {
-  const fewest = arr.reduce(
-    (acc, cur) => (cur.length < acc ? cur.length : acc),
-    Infinity,
-  );
-  return arr.filter(el => el.length === fewest);
 }
 
 // Create an array of all the shop name/ids
@@ -75,23 +18,6 @@ function listAllShops(data) {
   ];
 }
 
-function makeListWithShops(shops, data) {
-  return data.map(item => {
-    if (!shops) {
-      return { ...item, source: 'elsewhere' };
-    }
-    // We want to get it from the *first* shop in the shops list
-    let buyable;
-    for (let i = 0; i < shops.length; i++) {
-      buyable = item.sources.filter(source => source.shop === shops[i])[0];
-      if (buyable) break;
-    }
-    return buyable
-      ? { ...item, source: buyable }
-      : { ...item, source: 'elsewhere' };
-  });
-}
-
 function addUnknowns(data) {
   return data.map(item => ({
     ...item,
@@ -101,23 +27,68 @@ function addUnknowns(data) {
   }));
 }
 
-export default function reduceShops(
-  initialData,
-  shopsHierarchy,
-  { preferLocal },
-) {
-  const dataWithUnknowns = addUnknowns(initialData);
-  const allShops = listAllShops(dataWithUnknowns);
-  const allCombinations = findAllCombinations(dataWithUnknowns, allShops);
-  const localSorted = localSort(allCombinations, shopsHierarchy);
-  const leastChoices = pickFewest(allCombinations);
-  const sortedChoices = sortChoices(leastChoices, shopsHierarchy);
-  const finalList = makeListWithShops(
-    preferLocal
-      ? sortByHierarchy(localSorted[0], shopsHierarchy)
-      : sortedChoices[0],
-    dataWithUnknowns,
-  );
-
-  return finalList;
+// Visit each shop in the trip, and add the items it sells to a list
+function goShopping(trip, withShopsList) {
+  let data = [...withShopsList];
+  let list = [];
+  trip.forEach(shop => {
+    const canGetHere = data.filter(item => item.shops.includes(shop));
+    const cannotGetHere = data.filter(item => !item.shops.includes(shop));
+    list = [
+      ...list,
+      ...canGetHere.map(item => ({
+        name: item.name,
+        source: item.sources.filter(source => source.shop === shop)[0],
+      })),
+    ];
+    data = cannotGetHere;
+  });
+  return list;
 }
+
+function pickTrip(shops, indices) {
+  let result = [];
+  indices.forEach(i => result.push(shops[i]));
+  return result;
+}
+
+// Test a trip to see if you can get everything on the list
+function canGetEverything(trip, data) {
+  const notBuyable = data.filter(
+    item => !item.shops.filter(shop => trip.includes(shop)).length,
+  );
+  return !notBuyable.length;
+}
+
+function reduceShops(initialData, shopsHierarchy, { preferLocal }) {
+  if (!initialData.length) return [];
+  const dataWithUnknowns = addUnknowns(initialData);
+  const allShops = sortByHierarchy(
+    listAllShops(dataWithUnknowns),
+    shopsHierarchy,
+  ); // All shops where we MIGHT want to go
+
+  // If we don't prefer local, use the default optimised generator
+
+  const withShopsList = dataWithUnknowns.map(item => ({
+    ...item,
+    shops: item.sources.map(source => source.shop),
+  }));
+
+  let idealTrip;
+  let sequence = preferLocal
+    ? mostLocalSequence(allShops.length)
+    : leastShopsSequence(allShops.length);
+  for (let indices of sequence) {
+    const trip = pickTrip(allShops, indices);
+    if (canGetEverything(trip, withShopsList)) {
+      idealTrip = [...trip];
+      break;
+    }
+  }
+
+  const newList = goShopping(idealTrip, withShopsList);
+  return newList;
+}
+
+export default reduceShops;

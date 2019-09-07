@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 
+import useShopsHierarchy from '../../utils/useShopsHierarchy';
+import useWindowWidth from '../../utils/useWindowWidth';
+
 import ClickableList from '../ClickableList';
 import InputItem from '../InputItem';
 import YourItems from '../YourItems';
 import Results from '../Results';
 import Header from '../Header';
 import ResultsOptions from '../ResultsOptions';
+import MobileControls from '../MobileControls';
 
 import './shoppingList.css';
 
-const url = 'https://us-central1-zerolist.cloudfunctions.net/shopping';
+const shopsDataUrl = 'https://us-central1-zerolist.cloudfunctions.net/shopping';
+
 const initialShopsHierarchy = [
   'milkandmore',
   'beetroot',
@@ -31,11 +36,22 @@ const ShoppingList = () => {
   const [data, setData] = useState();
   const [list, setList] = useState([]);
   const [errors, setErrors] = useState([]);
-  const [shopsHierarchy, setShopsHierarchy] = useState(initialShopsHierarchy);
-
+  const [selected, setSelected] = useState(0);
+  const {
+    shopsHierarchy,
+    setShopsHierarchy,
+    sendUp,
+    sendDown,
+    sendToTop,
+    sendToBottom,
+    resetShops,
+  } = useShopsHierarchy(initialShopsHierarchy);
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const windowWidth = useWindowWidth();
+
   useEffect(() => {
-    fetch(url)
+    // Fetch (all) the data
+    fetch(shopsDataUrl)
       .then(response => {
         return response.json();
       })
@@ -48,40 +64,46 @@ const ShoppingList = () => {
           'Sorry, there was an error connecting to the server. Please check your connection and try again.',
         ]);
       });
-    // TODO handle error
   }, []);
 
   useEffect(() => {
+    // Try to get the user's previous list from localstorage
     try {
       const listFromStorage = localStorage.getItem('list');
       if (listFromStorage && listFromStorage !== 'null') {
         setList(JSON.parse(listFromStorage));
       }
     } catch (e) {
-      // ignore if localStorage fails
+      // ignore errors
     }
   }, []);
 
   useEffect(() => {
+    // Each time the list changes, try to put it in localStorage
     try {
       localStorage.setItem('list', JSON.stringify(list));
     } catch (e) {
-      // ignore if localStorage fails
+      // ignore errors
     }
   }, [list]);
 
-  useEffect(function getHierarchyFromStorage() {
-    try {
-      const hierarchyFromStorage = localStorage.getItem('shopsHierarchy');
-      if (hierarchyFromStorage) {
-        setShopsHierarchy(JSON.parse(hierarchyFromStorage));
+  useEffect(
+    // Initially, get the shops hierarchy from localstorage
+    function getHierarchyFromStorage() {
+      try {
+        const hierarchyFromStorage = localStorage.getItem('shopsHierarchy');
+        if (hierarchyFromStorage) {
+          setShopsHierarchy(JSON.parse(hierarchyFromStorage));
+        }
+      } catch (e) {
+        // ignore if localStorage fails
       }
-    } catch (e) {
-      // ignore if localStorage fails
-    }
-  }, []);
+    },
+    [setShopsHierarchy],
+  );
 
   useEffect(
+    // Every time shopsHierarchy changes, we want to update it in localstorage
     function updateStorageWithHierarchy() {
       try {
         localStorage.setItem('shopsHierarchy', JSON.stringify(shopsHierarchy));
@@ -92,55 +114,6 @@ const ShoppingList = () => {
     [shopsHierarchy],
   );
 
-  const resetShops = () => setShopsHierarchy(initialShopsHierarchy);
-
-  const sendToTop = id =>
-    setShopsHierarchy([id, ...shopsHierarchy.filter(shopId => shopId !== id)]);
-
-  const sendUp = id => {
-    const idIndex = shopsHierarchy.indexOf(id);
-    if (idIndex < 1) {
-      return;
-    }
-    if (shopsHierarchy.length === idIndex + 1) {
-      setShopsHierarchy([
-        ...shopsHierarchy.slice(0, idIndex - 1),
-        id,
-        shopsHierarchy[idIndex - 1],
-      ]);
-    } else {
-      setShopsHierarchy([
-        ...shopsHierarchy.slice(0, idIndex - 1),
-        id,
-        shopsHierarchy[idIndex - 1],
-        ...shopsHierarchy.slice(idIndex + 1),
-      ]);
-    }
-  };
-  const sendDown = id => {
-    const idIndex = shopsHierarchy.indexOf(id);
-    if (idIndex + 1 === shopsHierarchy.length) {
-      return;
-    }
-    if (idIndex === 0) {
-      setShopsHierarchy([
-        shopsHierarchy[idIndex + 1],
-        id,
-        ...shopsHierarchy.slice(idIndex + 2),
-      ]);
-    } else {
-      setShopsHierarchy([
-        ...shopsHierarchy.slice(0, idIndex),
-        shopsHierarchy[idIndex + 1],
-        id,
-        ...shopsHierarchy.slice(idIndex + 2),
-      ]);
-    }
-  };
-
-  const sendToBottom = id =>
-    setShopsHierarchy([...shopsHierarchy.filter(shopId => shopId !== id), id]);
-
   const addItem = item => setList([...list.filter(i => i !== item), item]);
   const removeItem = item => setList(list.filter(i => i !== item));
   const clearList = () => setList([]);
@@ -150,6 +123,7 @@ const ShoppingList = () => {
       ...(list.filter(i => i === item).length ? [] : [item]),
     ]);
   };
+
   if (errors.length)
     return (
       <ul>
@@ -158,8 +132,64 @@ const ShoppingList = () => {
         ))}
       </ul>
     );
+
   if (!data && !errors.length) return <p>Loading...</p>;
   const items = data ? data.sources.map(source => source.name) : [];
+
+  if (windowWidth < 480) {
+    // Mobile UI
+    return (
+      <div className="wrapper">
+        <div className="content">
+          <Header />
+          <main className="shopping-list">
+            {selected === 0 && (
+              <>
+                <InputItem choices={items} addItem={addItem} />
+                <YourItems
+                  list={list}
+                  removeItem={removeItem}
+                  clearList={clearList}
+                />
+                <ClickableList
+                  items={items}
+                  currentList={list}
+                  toggleItem={toggleItem}
+                />
+              </>
+            )}
+            {selected === 1 && (
+              <ResultsOptions
+                shopsHierarchy={shopsHierarchy}
+                onClose={() => setOptionsOpen(false)}
+                sendUp={sendUp}
+                sendDown={sendDown}
+                sendToTop={sendToTop}
+                sendToBottom={sendToBottom}
+                resetShops={resetShops}
+                data={data}
+              />
+            )}
+            {selected === 2 && (
+              <Results
+                list={list}
+                data={data}
+                shopsHierarchy={shopsHierarchy}
+                onOptionsClick={() => setOptionsOpen(true)}
+                sendUp={sendUp}
+                sendDown={sendDown}
+                sendToTop={sendToTop}
+                sendToBottom={sendToBottom}
+              />
+            )}
+          </main>
+          <MobileControls selected={selected} setSelected={setSelected} />
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop UI
   return (
     <div className="wrapper">
       <div className="content">
@@ -176,7 +206,7 @@ const ShoppingList = () => {
             currentList={list}
             toggleItem={toggleItem}
           />
-          {optionsOpen ? (
+          {optionsOpen && (
             <ResultsOptions
               shopsHierarchy={shopsHierarchy}
               onClose={() => setOptionsOpen(false)}
@@ -186,8 +216,10 @@ const ShoppingList = () => {
               sendToBottom={sendToBottom}
               resetShops={resetShops}
               data={data}
+              showControls
             />
-          ) : (
+          )}
+          {!optionsOpen && (
             <Results
               list={list}
               data={data}
@@ -197,6 +229,7 @@ const ShoppingList = () => {
               sendDown={sendDown}
               sendToTop={sendToTop}
               sendToBottom={sendToBottom}
+              showControls
             />
           )}
         </main>

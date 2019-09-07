@@ -19,7 +19,7 @@ const ShopOption = ({
   <li className="shop-option">
     <h2 className="shop-option__shop-name">
       <div>{`${index}. ${shopDetails.name}`}</div>{' '}
-      <div>
+      <div className="shop-option__controls">
         <button
           onClick={() => sendToTop(shopDetails.id)}
           className="shop-option__icon-button"

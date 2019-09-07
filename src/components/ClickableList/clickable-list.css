@@ -47,7 +47,7 @@ clickable-item__button-container {
   cursor: pointer;
   color: #eee;
   background-color: #403339;
-  border: 1px solid #333;
+  border: none;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -60,4 +60,13 @@ clickable-item__button-container {
 .clickable-item__button:hover,
 .clickable-item__button:focus {
   background-color: #4f5458;
+}
+
+.clickable-item__button--listed {
+  background-color: #6cb171;
+}
+
+.clickable-item__button--listed:hover,
+.clickable-item__button--listed:focus {
+  background-color: #63aa44;
 }

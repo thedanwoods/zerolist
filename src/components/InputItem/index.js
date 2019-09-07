@@ -23,7 +23,6 @@ const Item = ({ title, selected, typing, onFocus, onClick }) => {
   );
 };
 
-// Make it a form
 // If we press enter and there is only one suggestion, add it
 // If we press down, highlight items AND change input to it
 const InputItem = ({ choices, addItem }) => {
@@ -113,6 +112,7 @@ const InputItem = ({ choices, addItem }) => {
           onChange={e => setValue(e.target.value)}
           ref={inputRef}
           placeholder="e.g. Pasta"
+          autoComplete="off"
         />
       </form>
       {value.length > 0 && filteredChoices.length > 0 && (

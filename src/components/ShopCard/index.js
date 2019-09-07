@@ -19,7 +19,7 @@ const ShopCard = ({
   <div className="shop-card">
     <h2 className="shop-card__shop-name">
       <div>{shopDetails.name}</div>{' '}
-      <div>
+      <div className="shop-card__controls">
         <button
           onClick={() => sendToTop(shopDetails.id)}
           className="shop-card__icon-button"

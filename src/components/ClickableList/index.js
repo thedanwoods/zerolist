@@ -7,7 +7,9 @@ const ClickableItem = ({ title, listed, toggleItem }) => (
     <div className="clickable-item__name">{title}</div>
     <div className="clickable-item__button-container">
       <button
-        className="clickable-item__button"
+        className={`clickable-item__button ${
+          listed ? 'clickable-item__button--listed' : ''
+        }`}
         type="button"
         onClick={toggleItem}
       >
